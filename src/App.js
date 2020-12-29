@@ -1,11 +1,35 @@
 import React from "react";
-import "./styles.css";
+import firebase from "firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import Login from "./Login";
+import Logout from "./Logout";
 
-export default function App() {
+const App = () => {
+  const [user, loading, error] = useAuthState(firebase.auth());
+
+  if (loading) {
+    return (
+      <div>
+        <p>Initialising User...</p>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div>
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
+  if (!user) {
+    return <Login />;
+  }
   return (
-    <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
+    <div>
+      User: {user.email}
+      <Logout />
     </div>
   );
-}
+};
+
+export default App;
